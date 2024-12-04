@@ -39,11 +39,11 @@ Password Genie allows you to create secure passwords based on your preferences f
 
 2. Navigate to the project directory:
    ```bash
-   cd pass-gen-tkinter.py
+   cd passgenie-tkinter
 
 3. Run the Python script:
    ```bash
-   python password_genie.py
+   python pass-gen-tkinter.py
 
 ## Usage
 - Enter the desired length of the password.
