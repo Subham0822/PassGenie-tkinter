@@ -8,6 +8,7 @@ import string
 # Function to generate password
 def generate_password():
     try:
+        global generated_password  # Make password accessible to the copy function
         length = int(length_entry.get())
         include_uppercase = uppercase_var.get()
         include_numbers = numbers_var.get()
@@ -40,12 +41,24 @@ def generate_password():
 
         # Shuffle and display password
         random.shuffle(password)
-        result_label.config(text="Generated Password: " + ''.join(password), fg="#2E7D32")
+        generated_password = ''.join(password)
+        result_label.config(text="Generated Password: " + generated_password, fg="#2E7D32")
     except ValueError:
         result_label.config(text="Please enter a valid number for length.", fg="#D32F2F")
 
 
-# Hover effect for the button
+# Function to copy password to clipboard
+def copy_to_clipboard():
+    try:
+        root.clipboard_clear()
+        root.clipboard_append(generated_password)
+        root.update()  # Ensures clipboard content is updated
+        result_label.config(text="Password copied to clipboard!", fg="#1976D2")
+    except NameError:
+        result_label.config(text="No password to copy! Please generate one.", fg="#D32F2F")
+
+
+# Hover effect for buttons
 def on_enter(e):
     e.widget['bg'] = '#2E7D32'
     e.widget['fg'] = 'white'
@@ -59,7 +72,7 @@ def on_leave(e):
 # Create the main window
 root = tk.Tk()
 root.title("Password Genie - Your Key to Secure Passwords")
-root.geometry("450x400")
+root.geometry("450x450")
 root.iconphoto(True, PhotoImage(file='/Users/subhamrakshit/Desktop/coding/GUI/pass-generator-tkinter/pass-gen-icon.png'))
 root.configure(bg="#F8F9FA")
 
@@ -132,9 +145,13 @@ special_no = tk.Radiobutton(
 special_yes.grid(row=3, column=1, sticky="w", padx=10)
 special_no.grid(row=3, column=2, sticky="w")
 
+# Button frame for alignment
+button_frame = tk.Frame(root, bg="#F8F9FA")
+button_frame.pack(pady=20)
+
 # Generate Password button
 generate_button = Button(
-    root,
+    button_frame,
     text="Generate Password",
     bg="#4CAF50",
     fg="white",
@@ -144,11 +161,27 @@ generate_button = Button(
     command=generate_password,
     borderless=True,
 )
-generate_button.pack(pady=20)
+generate_button.grid(row=0, column=0, padx=10)
 
-# Add hover effects to the button
-generate_button.bind("<Enter>", on_enter)
+# Copy to Clipboard button
+copy_button = Button(
+    button_frame,
+    text="Copy to Clipboard",
+    bg="#4CAF50",
+    fg="white",
+    font=("Helvetica", 14),
+    activebackground="#388E3C",
+    activeforeground="white",
+    command=copy_to_clipboard,
+    borderless=True,
+)
+copy_button.grid(row=0, column=1, padx=10)
+
+# Add hover effects to buttons
+generate_button.bind("<Return>", on_enter)
 generate_button.bind("<Leave>", on_leave)
+copy_button.bind("<Return>", on_enter)
+copy_button.bind("<Leave>", on_leave)
 
 # Result display label
 result_label = tk.Label(
